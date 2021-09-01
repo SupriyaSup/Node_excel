@@ -38,18 +38,25 @@
        <table class="table">
   <thead>
     <tr>
+         <th scope="col">Id</th>
       <th scope="col">Name</th>
       <th scope="col">Email</th>
       <th scope="col">Aadhar</th>
     </tr>
   </thead>
   <tbody>
+      {{#each data }}
     <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
+    
+      
+        
+            <td>{{ id }}</td>
+            <td>{{ name }}</td>
+            <td>{{ email }}</td>
+            <td>{{ aadhar}}</td>
+        
     </tr>
+    {{/each}}
     
   </tbody>
 </table>

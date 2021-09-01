@@ -23,20 +23,32 @@ exports.excel_upload = (req,res,next) => {
                     aadhar: rows[i][2]
                 }
                 customers.push(customer);
-                db.query('INSERT INTO  members SET ?',{ 
-                    user_id:req.user.id,
-                    name:customer.name,
-                    email:customer.email,
-                    aadhar:customer.aadhar },(error,results) => {
-                    if(error){
-                        console.log(error);
-                    }  
-                    else{
+                const db_user = db.query('SELECT * FROM members u WHERE u.aadhar  = ?', (customer.aadhar) , async (error, results) => {
+                    if(results.length > 0){
                         return res.render('members',{
-                            message:'Uploaded successfully'
-                        }) 
-                    } 
-                });
+                            message:'members you are uploded with aadhar no:' +  customer.aadhar + 'is already exists'
+                        })
+                    }
+                    else{
+                        db.query('INSERT INTO  members SET ?',{ 
+                            user_id:req.user.id,
+                            name:customer.name,
+                            email:customer.email,
+                            aadhar:customer.aadhar },(error,results) => {
+                            if(error){
+                                return res.render('dashboard',{
+                                    message:'something went wrong'
+                                })
+                            }  
+                            else{
+                                return res.render('members',{
+                                    message:'Uploaded successfully'
+                                }) 
+                            } 
+                        });
+                    }
+                })
+                
             }
         });
     }catch(error){
@@ -45,6 +57,7 @@ exports.excel_upload = (req,res,next) => {
             filename: req.file.originalname,
             message: "Upload Error! message = " + error.message
         }
-        res.json(result);
+        
+        
     }
 }

@@ -46,13 +46,11 @@ exports.register = (req,res) =>{
 }
 
 exports.login = (req,res,next) => {
-    
     passport.authenticate('local', {
         successRedirect: "/dashboard",
         failureRedirect: "/login",
         failureFlash: true
     })(req, res, next);
-  
 }
 
 exports.checklogin = (req,res,next) => {
@@ -67,5 +65,17 @@ exports.dashboard = (req,res) => {
 }
 
 exports.members = (req,res) => {
-    return res.render("members");
+    const members = db.query('SELECT * FROM members u WHERE u.user_id = ?',(req.user.id),async (error,results) => {
+        if(results.length > 0){
+            return res.render('members',{
+                data:results.map(({id,name,email,aadhar}) => ({id,name,email,aadhar}))
+            }) 
+        }else{
+            return res.render('members',{
+                message:'members you have not uploaded to view it,please go to dashboard to upload excel'
+            }) 
+        }
+       
+        
+    })
 }
